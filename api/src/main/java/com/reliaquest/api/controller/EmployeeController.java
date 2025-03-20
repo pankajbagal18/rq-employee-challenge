@@ -3,12 +3,13 @@ package com.reliaquest.api.controller;
 import com.reliaquest.api.model.CreateEmployeeInput;
 import com.reliaquest.api.model.Employee;
 import com.reliaquest.api.service.EmployeeService;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/employee")
@@ -24,31 +25,36 @@ public class EmployeeController implements IEmployeeController<Employee, CreateE
 
     @Override
     public ResponseEntity<List<Employee>> getEmployeesByNameSearch(String searchString) {
-        return null;
+        return ResponseEntity.ok(employeeService.findEmployeesByNameSearch(searchString));
     }
 
     @Override
     public ResponseEntity<Employee> getEmployeeById(String id) {
-        return null;
+        return employeeService.findEmployeeById(id);
     }
 
     @Override
     public ResponseEntity<Integer> getHighestSalaryOfEmployees() {
-        return null;
+        return Optional.of(employeeService.findHighestSalaryOfEmployees())
+                .filter(salary -> salary != -1)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @Override
     public ResponseEntity<List<String>> getTopTenHighestEarningEmployeeNames() {
-        return null;
+        List<String> topSalariedEmployee = employeeService.findTopSalariedEmployee(10);
+        return ResponseEntity.ok(topSalariedEmployee);
     }
 
     @Override
     public ResponseEntity<Employee> createEmployee(CreateEmployeeInput employeeInput) {
-        return null;
+        Employee employee = employeeService.createNewEmployee(employeeInput);
+        return ResponseEntity.ok(employee);
     }
 
     @Override
     public ResponseEntity<String> deleteEmployeeById(String id) {
-        return null;
+        return employeeService.deleteEmployeeById(id);
     }
 }

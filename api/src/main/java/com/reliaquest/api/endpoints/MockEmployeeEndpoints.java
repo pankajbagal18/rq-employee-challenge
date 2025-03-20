@@ -1,7 +1,5 @@
 package com.reliaquest.api.endpoints;
 
-import lombok.Data;
-
 public enum MockEmployeeEndpoints {
     ALL_EMPLOYEES("", "GET");
     private String url;
