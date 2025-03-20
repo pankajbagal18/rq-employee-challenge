@@ -7,6 +7,10 @@ import com.reliaquest.api.model.CreateEmployeeInput;
 import com.reliaquest.api.model.DeleteEmployeeInput;
 import com.reliaquest.api.model.Employee;
 import com.reliaquest.api.model.Response;
+import feign.FeignException;
+import feign.Request;
+import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,8 +50,11 @@ class EmployeeServiceMockTest {
 
     @Test
     void deleteEmployee_EmployeeNotPresent() {
-        Mockito.when(mockEmployeeClient.findEmployeeById("123"))
-                .thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        Request request = Request.create(
+                Request.HttpMethod.GET, "/ghas", Collections.emptyMap(), new byte[1], Charset.defaultCharset(), null);
+        FeignException notFound =
+                new FeignException.NotFound("Not found", request, new byte[1], Collections.emptyMap());
+        Mockito.when(mockEmployeeClient.findEmployeeById("123")).thenThrow(notFound);
         ResponseEntity<String> deleted = employeeService.deleteEmployeeById("123");
         assertEquals(HttpStatus.NOT_FOUND, deleted.getStatusCode());
         assertEquals("Employee not found with Id - 123", deleted.getBody());

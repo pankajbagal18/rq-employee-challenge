@@ -5,17 +5,13 @@ import com.reliaquest.api.model.CreateEmployeeInput;
 import com.reliaquest.api.model.DeleteEmployeeInput;
 import com.reliaquest.api.model.Employee;
 import com.reliaquest.api.model.Response;
+import feign.FeignException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +21,6 @@ import org.springframework.stereotype.Service;
 public class EmployeeService {
 
     private final MockEmployeeClient mockEmployeeClient;
-
 
     public List<Employee> getAllEmployees() {
         return mockEmployeeClient.getAllEmployees().data();
